@@ -1,0 +1,12 @@
+{
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false
+  },
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}
