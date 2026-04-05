@@ -20,7 +20,7 @@ describe('ApiKeyFormComponent', () => {
     if (savedKey) {
       await new Promise<void>((resolve) =>
         chrome.storage.local.set(
-          { buff_settings: { anthropicApiKey: savedKey, openAiApiKey: '', model: '' } },
+          { buff_settings: { apiKey: savedKey, provider: 'anthropic', model: '' } },
           resolve,
         ),
       );
@@ -52,7 +52,7 @@ describe('ApiKeyFormComponent', () => {
     await fixture.whenStable();
 
     const saved = await getSettings();
-    expect(saved.anthropicApiKey).toBe('sk-ant-new-key');
+    expect(saved.apiKey).toBe('sk-ant-new-key');
   });
 
   it('calls validateAnthropicKey after writing the key to storage', async () => {

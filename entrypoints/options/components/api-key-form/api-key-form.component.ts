@@ -41,14 +41,14 @@ export class ApiKeyFormComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const settings = await getSettings();
-    this.apiKeyControl.setValue(settings.anthropicApiKey);
+    this.apiKeyControl.setValue(settings.apiKey);
   }
 
   async onValidate(): Promise<void> {
     this.status.set('validating');
     this.apiKeyControl.disable();
     const settings = await getSettings();
-    await saveSettings({ ...settings, anthropicApiKey: this.apiKeyControl.value });
+    await saveSettings({ ...settings, apiKey: this.apiKeyControl.value });
     const isValid = await validateAnthropicKey(this.apiKeyControl.value);
     this.status.set(isValid ? 'valid' : 'invalid');
     this.apiKeyControl.enable();

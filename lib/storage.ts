@@ -1,14 +1,16 @@
 const STORAGE_KEY = 'buff_settings';
 
+export type Provider = 'anthropic' | 'openai';
+
 export interface Settings {
-  anthropicApiKey: string;
-  openAiApiKey: string;
+  apiKey: string;
+  provider: Provider;
   model: string;
 }
 
 const defaultSettings: Settings = {
-  anthropicApiKey: '',
-  openAiApiKey: '',
+  apiKey: '',
+  provider: 'anthropic',
   model: '',
 };
 
@@ -22,7 +24,18 @@ class NotImplementedError extends Error {
 export function getSettings(): Promise<Settings> {
   return new Promise((resolve) => {
     chrome.storage.local.get(STORAGE_KEY, (result) => {
-      resolve({ ...defaultSettings, ...(result[STORAGE_KEY] as Partial<Settings> ?? {}) });
+      const stored = result[STORAGE_KEY] as Record<string, unknown> | undefined;
+      if (stored && 'anthropicApiKey' in stored) {
+        // Migrate Phase 1 shape → Phase 2
+        const migrated: Settings = {
+          apiKey: (stored['anthropicApiKey'] as string) ?? '',
+          provider: 'anthropic',
+          model: 'claude-sonnet-4-6',
+        };
+        chrome.storage.local.set({ [STORAGE_KEY]: migrated }, () => resolve(migrated));
+      } else {
+        resolve({ ...defaultSettings, ...(stored as Partial<Settings> ?? {}) });
+      }
     });
   });
 }
