@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div>
       <h1>Buff</h1>

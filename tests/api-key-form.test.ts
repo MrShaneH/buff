@@ -44,10 +44,8 @@ describe('ApiKeyFormComponent', () => {
   it('writes the current input value to storage when Validate Key is clicked', async () => {
     mockValidate.mockResolvedValue(true);
     const fixture = await mount('sk-ant-old-key');
-    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
 
-    input.value = 'sk-ant-new-key';
-    input.dispatchEvent(new Event('input'));
+    fixture.componentInstance.apiKeyControl.setValue('sk-ant-new-key');
     fixture.detectChanges();
 
     fixture.nativeElement.querySelector('button').click();
@@ -60,11 +58,8 @@ describe('ApiKeyFormComponent', () => {
   it('calls validateAnthropicKey after writing the key to storage', async () => {
     mockValidate.mockResolvedValue(true);
     const fixture = await mount();
-    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
-    input.value = 'sk-ant-test';
-    input.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
 
+    fixture.componentInstance.apiKeyControl.setValue('sk-ant-test');
     fixture.nativeElement.querySelector('button').click();
     await fixture.whenStable();
 

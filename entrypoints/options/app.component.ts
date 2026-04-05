@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ApiKeyFormComponent } from './components/api-key-form/api-key-form.component';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ApiKeyFormComponent],
   template: `<app-api-key-form />`,
 })
