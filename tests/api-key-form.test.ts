@@ -5,10 +5,12 @@ import { getSettings } from '../lib/storage';
 
 vi.mock('../lib/apiClient', () => ({
   validateAnthropicKey: vi.fn(),
+  validateOpenAIKey: vi.fn(),
 }));
 
-import { validateAnthropicKey } from '../lib/apiClient';
-const mockValidate = vi.mocked(validateAnthropicKey);
+import { validateAnthropicKey, validateOpenAIKey } from '../lib/apiClient';
+const mockValidateAnthropic = vi.mocked(validateAnthropicKey);
+const mockValidateOpenAI = vi.mocked(validateOpenAIKey);
 
 describe('ApiKeyFormComponent', () => {
   beforeEach(() => {
@@ -16,34 +18,41 @@ describe('ApiKeyFormComponent', () => {
     vi.resetAllMocks();
   });
 
-  async function mount(savedKey = ''): Promise<ReturnType<typeof TestBed.createComponent<ApiKeyFormComponent>>> {
-    if (savedKey) {
-      await new Promise<void>((resolve) =>
-        chrome.storage.local.set(
-          { buff_settings: { apiKey: savedKey, provider: 'anthropic', model: '' } },
-          resolve,
-        ),
-      );
-    }
+  async function mount(
+    provider: 'anthropic' | 'openai' = 'anthropic',
+    savedKey = '',
+  ): Promise<ReturnType<typeof TestBed.createComponent<ApiKeyFormComponent>>> {
     await TestBed.configureTestingModule({
       imports: [ApiKeyFormComponent],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(ApiKeyFormComponent);
+    fixture.componentRef.setInput('provider', provider);
+    fixture.componentRef.setInput('apiKey', savedKey);
     await fixture.whenStable();
     fixture.detectChanges();
     return fixture;
   }
 
-  it('pre-fills input with the saved API key on mount', async () => {
-    const fixture = await mount('sk-ant-saved-key');
+  it('pre-fills input with the provided apiKey on mount', async () => {
+    const fixture = await mount('anthropic', 'sk-ant-saved-key');
     const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
     expect(input.value).toBe('sk-ant-saved-key');
   });
 
+  it('shows "Anthropic API Key" label when provider is anthropic', async () => {
+    const fixture = await mount('anthropic');
+    expect(fixture.nativeElement.querySelector('label').textContent).toContain('Anthropic API Key');
+  });
+
+  it('shows "OpenAI API Key" label when provider is openai', async () => {
+    const fixture = await mount('openai');
+    expect(fixture.nativeElement.querySelector('label').textContent).toContain('OpenAI API Key');
+  });
+
   it('writes the current input value to storage when Validate Key is clicked', async () => {
-    mockValidate.mockResolvedValue(true);
-    const fixture = await mount('sk-ant-old-key');
+    mockValidateAnthropic.mockResolvedValue(true);
+    const fixture = await mount('anthropic', 'sk-ant-old-key');
 
     fixture.componentInstance.apiKeyControl.setValue('sk-ant-new-key');
     fixture.detectChanges();
@@ -55,24 +64,84 @@ describe('ApiKeyFormComponent', () => {
     expect(saved.apiKey).toBe('sk-ant-new-key');
   });
 
-  it('calls validateAnthropicKey after writing the key to storage', async () => {
-    mockValidate.mockResolvedValue(true);
-    const fixture = await mount();
+  it('calls validateAnthropicKey when provider is anthropic', async () => {
+    mockValidateAnthropic.mockResolvedValue(true);
+    const fixture = await mount('anthropic');
 
     fixture.componentInstance.apiKeyControl.setValue('sk-ant-test');
     fixture.nativeElement.querySelector('button').click();
     await fixture.whenStable();
 
-    expect(mockValidate).toHaveBeenCalledWith('sk-ant-test');
+    expect(mockValidateAnthropic).toHaveBeenCalledWith('sk-ant-test');
+    expect(mockValidateOpenAI).not.toHaveBeenCalled();
+  });
+
+  it('calls validateOpenAIKey when provider is openai', async () => {
+    mockValidateOpenAI.mockResolvedValue(true);
+    const fixture = await mount('openai');
+
+    fixture.componentInstance.apiKeyControl.setValue('sk-openai-test');
+    fixture.nativeElement.querySelector('button').click();
+    await fixture.whenStable();
+
+    expect(mockValidateOpenAI).toHaveBeenCalledWith('sk-openai-test');
+    expect(mockValidateAnthropic).not.toHaveBeenCalled();
+  });
+
+  it('saves model claude-sonnet-4-6 when provider is anthropic', async () => {
+    mockValidateAnthropic.mockResolvedValue(true);
+    const fixture = await mount('anthropic');
+
+    fixture.nativeElement.querySelector('button').click();
+    await fixture.whenStable();
+
+    const saved = await getSettings();
+    expect(saved.model).toBe('claude-sonnet-4-6');
+  });
+
+  it('saves model gpt-4o when provider is openai', async () => {
+    mockValidateOpenAI.mockResolvedValue(true);
+    const fixture = await mount('openai');
+
+    fixture.nativeElement.querySelector('button').click();
+    await fixture.whenStable();
+
+    const saved = await getSettings();
+    expect(saved.model).toBe('gpt-4o');
+  });
+
+  it('emits saved output after successful validation', async () => {
+    mockValidateAnthropic.mockResolvedValue(true);
+    const fixture = await mount('anthropic');
+
+    let savedEmitted = false;
+    fixture.componentInstance.saved.subscribe(() => (savedEmitted = true));
+
+    fixture.nativeElement.querySelector('button').click();
+    await fixture.whenStable();
+
+    expect(savedEmitted).toBe(true);
+  });
+
+  it('does not emit saved when validation fails', async () => {
+    mockValidateAnthropic.mockResolvedValue(false);
+    const fixture = await mount('anthropic');
+
+    let savedEmitted = false;
+    fixture.componentInstance.saved.subscribe(() => (savedEmitted = true));
+
+    fixture.nativeElement.querySelector('button').click();
+    await fixture.whenStable();
+
+    expect(savedEmitted).toBe(false);
   });
 
   it('shows loading state and disables button while validating', async () => {
     let resolveValidation!: (v: boolean) => void;
-    mockValidate.mockReturnValue(new Promise<boolean>((r) => (resolveValidation = r)));
+    mockValidateAnthropic.mockReturnValue(new Promise<boolean>((r) => (resolveValidation = r)));
 
-    const fixture = await mount();
+    const fixture = await mount('anthropic');
     fixture.nativeElement.querySelector('button').click();
-    // Flush microtasks up to (but not past) the pending validateAnthropicKey promise
     await Promise.resolve();
     fixture.detectChanges();
 
@@ -85,8 +154,8 @@ describe('ApiKeyFormComponent', () => {
   });
 
   it('shows success indicator when key is valid', async () => {
-    mockValidate.mockResolvedValue(true);
-    const fixture = await mount();
+    mockValidateAnthropic.mockResolvedValue(true);
+    const fixture = await mount('anthropic');
 
     fixture.nativeElement.querySelector('button').click();
     await fixture.whenStable();
@@ -97,8 +166,8 @@ describe('ApiKeyFormComponent', () => {
   });
 
   it('shows error message when key is invalid', async () => {
-    mockValidate.mockResolvedValue(false);
-    const fixture = await mount();
+    mockValidateAnthropic.mockResolvedValue(false);
+    const fixture = await mount('anthropic');
 
     fixture.nativeElement.querySelector('button').click();
     await fixture.whenStable();
