@@ -17,6 +17,7 @@
   },
   "include": [
     "entrypoints/popup/**/*.ts",
-    "entrypoints/options/**/*.ts"
+    "entrypoints/options/**/*.ts",
+    "lib/**/*.ts"
   ]
 }
