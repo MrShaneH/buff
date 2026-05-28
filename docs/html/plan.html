@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buff — Project Plan</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-2: #22263a;
+      --border: #2e3250;
+      --text: #e2e4f0;
+      --text-muted: #8b90b0;
+      --accent: #6c8cff;
+      --accent-dim: #3a4a99;
+      --green: #4ade80;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --code-bg: #12141e;
+      font-size: 15px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Typography ── */
+    h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; color: #fff; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.35rem; font-weight: 600; color: var(--accent); margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.05rem; font-weight: 600; color: #c9ccee; margin: 1.75rem 0 0.6rem; }
+    p  { margin-bottom: 0.9rem; color: var(--text); }
+    strong { color: #fff; font-weight: 600; }
+
+    /* ── Hero tagline ── */
+    .tagline {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 0.8rem 1.2rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin: 0.75rem 0 2rem;
+    }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* ── Principles list ── */
+    ul.principles {
+      list-style: none;
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    ul.principles li {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.55rem 0.9rem;
+    }
+    ul.principles li strong { color: var(--accent); }
+
+    /* ── Use case ordered list ── */
+    ol.use-cases {
+      list-style: none;
+      counter-reset: uc;
+      display: grid;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    ol.use-cases li {
+      counter-increment: uc;
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+    ol.use-cases li::before {
+      content: counter(uc);
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      min-width: 1.5rem;
+      text-align: center;
+      border-radius: 4px;
+      padding: 0.1rem 0.3rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Generic styled list ── */
+    ul.styled {
+      list-style: none;
+      display: grid;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+    }
+    ul.styled li::before { content: "›"; color: var(--accent); margin-right: 0.5rem; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin-bottom: 1.25rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    thead tr { background: var(--surface-2); }
+    th {
+      text-align: left;
+      padding: 0.6rem 0.9rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+    td code { font-size: 0.82rem; }
+
+    /* ── Code ── */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 0.75rem 0 1.25rem;
+      font-size: 0.83rem;
+      line-height: 1.55;
+    }
+    code {
+      font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+      color: #b8caf8;
+    }
+    pre code { color: #b8caf8; }
+    .kw  { color: #c792ea; }
+    .str { color: #c3e88d; }
+    .cm  { color: #546e7a; }
+    .fn  { color: #82aaff; }
+
+    /* ── ASCII wireframe ── */
+    pre.wireframe {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+
+    /* ── Step cards ── */
+    .steps { display: grid; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+    }
+    .step-card h3 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .step-num {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Popup state tags ── */
+    .state-list { display: grid; gap: 0.35rem; margin: 0.75rem 0 1rem; }
+    .state-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      padding: 0.4rem 0.75rem;
+      background: var(--surface-2);
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+    .state-label {
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 13rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Risk table badge ── */
+    .badge {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-risk { background: #3b1f1f; color: var(--red); }
+    .badge-mit  { background: #1c2e1c; color: var(--green); }
+
+    /* ── Execution steps table highlight ── */
+    .exec-table td:first-child { font-weight: 600; color: var(--accent); white-space: nowrap; }
+    .exec-table td:last-child  { color: var(--green); }
+
+    /* ── Section anchors ── */
+    h2 a, h3 a { color: inherit; text-decoration: none; }
+    h2:hover a::after, h3:hover a::after { content: " #"; color: var(--border); font-size: 0.8em; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Buff — Project Plan</h1>
+  <blockquote class="tagline">
+    An AI-powered browser extension that reads a website's HTML/CSS and rewrites it to be modern,
+    responsive, and mobile-friendly. Uses the user's own AI API key (BYOK). No backend required.
+  </blockquote>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="overview">1. Project Overview</h2>
+
+  <h3>Problem</h3>
+  <p>
+    Millions of websites — particularly government, academic, local business, and community sites —
+    are desktop-only, visually outdated, and unusable on mobile. Their owners will never update them.
+    Users have no recourse.
+  </p>
+
+  <h3>Solution</h3>
+  <p>
+    A Chrome extension that, when invoked, sends the page's structure to an AI model (Claude or OpenAI),
+    receives improved CSS, and injects it directly into the live page. The user needs no CSS knowledge.
+  </p>
+
+  <h3>Key Design Principles</h3>
+  <ul class="principles">
+    <li><strong>BYOK (Bring Your Own Key)</strong> — user supplies their own Anthropic or OpenAI API key. No backend, no cost to developer, no privacy concerns.</li>
+    <li><strong>CSS injection only</strong> — never rewrite HTML. Injecting a <code>&lt;style&gt;</code> block is safe and reversible; rewriting the DOM breaks JS event listeners.</li>
+    <li><strong>Non-destructive</strong> — always preserve a reset path back to the original styles via <code>.buff-active</code> class removal.</li>
+    <li><strong>Per-site persistence</strong> — generated CSS is saved to <code>chrome.storage</code> keyed by domain, auto-applied on return visits.</li>
+    <li><strong>Progressive improvement</strong> — large pages can be improved incrementally across multiple runs; CSS merges additively.</li>
+  </ul>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="use-cases">2. Target Use Cases (Priority Order)</h2>
+  <ol class="use-cases">
+    <li><strong>Local business &amp; community sites</strong> — small town papers, council sites, hobby forums.</li>
+    <li><strong>Academic &amp; research sites</strong> — university departments, journals, library portals.</li>
+    <li><strong>Government websites</strong> — high-traffic, mandatory-use, chronically neglected. 92% of US federal sites fail mobile-friendliness tests.</li>
+    <li><strong>Legacy corporate sites</strong> — older intranets and public-facing portals.</li>
+  </ol>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="tech-stack">3. Tech Stack</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Choice</th><th>Reason</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Extension framework</td><td><strong>WXT</strong></td><td>Vite-based, framework-agnostic, MV3, multi-browser, file-based entrypoints</td></tr>
+        <tr><td>Language</td><td><strong>TypeScript</strong></td><td>Type safety across all scripts</td></tr>
+        <tr><td>UI</td><td><strong>Angular 17+ + Tailwind</strong></td><td>Developer familiarity; Angular's Vite-based app builder integrates via <code>@analogjs/vite-plugin-angular</code></td></tr>
+        <tr><td>AI provider</td><td><strong>Anthropic Claude API</strong> (primary), OpenAI (secondary)</td><td>Claude excels at structured code output</td></tr>
+        <tr><td>Default model</td><td><strong>claude-sonnet-4-6</strong></td><td>Best quality/cost ratio; Haiku and Opus selectable per user preference</td></tr>
+        <tr><td>Storage</td><td><strong>chrome.storage.local</strong></td><td>Per-site CSS persistence, API key storage, active state tracking</td></tr>
+        <tr><td>Build</td><td><strong>WXT build pipeline</strong></td><td>Outputs to <code>.output/chrome-mv3</code> for Chrome; supports Firefox target</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="repo-structure">4. Repository Structure</h2>
+  <pre><code>buff/
+├── wxt.config.ts                 <span class="cm"># WXT + Vite config (Angular plugin, manifest)</span>
+├── package.json
+├── tsconfig.json
+│
+├── public/
+│   └── icon.png                  <span class="cm"># 512×512 extension icon</span>
+│
+├── entrypoints/
+│   ├── popup.html                <span class="cm"># Popup entry point (bootstraps Angular)</span>
+│   ├── popup/
+│   │   ├── main.ts               <span class="cm"># Angular bootstrap for popup</span>
+│   │   ├── app.component.ts
+│   │   └── components/
+│   │       ├── status-bar/       <span class="cm"># Current site + improvement status</span>
+│   │       ├── action-buttons/   <span class="cm"># Improve / Improve More / Reset / Regenerate</span>
+│   │       └── theme-hints/      <span class="cm"># Optional user hint input</span>
+│   │
+│   ├── options.html              <span class="cm"># Options entry point (bootstraps Angular)</span>
+│   ├── options/
+│   │   ├── main.ts               <span class="cm"># Angular bootstrap for options</span>
+│   │   ├── app.component.ts
+│   │   └── components/
+│   │       ├── api-key-form/     <span class="cm"># API key input + validate button</span>
+│   │       ├── provider-selector/<span class="cm"># Claude vs OpenAI toggle</span>
+│   │       ├── model-selector/   <span class="cm"># Haiku / Sonnet / Opus selector</span>
+│   │       └── saved-sites/      <span class="cm"># Per-site cache list with clear buttons</span>
+│   │
+│   ├── content.ts                <span class="cm"># Content script — DOM reader + CSS injector</span>
+│   └── background.ts             <span class="cm"># Service worker — API calls, storage management</span>
+│
+├── lib/
+│   ├── extractPageStructure.ts   <span class="cm"># Smart page skeleton extraction with truncation</span>
+│   ├── sanitizeCSS.ts            <span class="cm"># Value-aware CSS safety filter</span>
+│   ├── buildPrompt.ts            <span class="cm"># AI prompt constructor (.buff-active scoping)</span>
+│   ├── apiClient.ts              <span class="cm"># Claude + OpenAI API calls with fence extraction</span>
+│   └── storage.ts                <span class="cm"># chrome.storage helpers</span>
+│
+└── tests/
+    ├── extractPageStructure.test.ts
+    ├── sanitizeCSS.test.ts
+    ├── buildPrompt.test.ts
+    └── apiClient.test.ts</code></pre>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="bootstrap">5. Bootstrap Steps</h2>
+
+  <div class="steps">
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 1</span> Environment Setup</h3>
+      <pre><code><span class="cm"># Prerequisites: Node.js 18+, npm 9+</span>
+
+<span class="cm"># Scaffold WXT project with vanilla TypeScript template</span>
+npm create wxt@latest pageai -- --template vanilla-ts
+cd pageai
+npm install</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 2</span> Install Dependencies</h3>
+      <pre><code><span class="cm"># Angular and its Vite integration</span>
+npm install @angular/core @angular/common @angular/platform-browser @angular/forms
+npm install -D @analogjs/vite-plugin-angular
+
+<span class="cm"># Tailwind</span>
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init
+
+<span class="cm"># AI providers</span>
+npm install @anthropic-ai/sdk openai
+
+<span class="cm"># Dev/test</span>
+npm install -D typescript @types/chrome vitest</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 3</span> Configure WXT + Angular</h3>
+      <p>Create <code>wxt.config.ts</code> at the project root:</p>
+      <pre><code><span class="kw">import</span> { defineConfig } <span class="kw">from</span> <span class="str">'wxt'</span>;
+<span class="kw">import</span> angular <span class="kw">from</span> <span class="str">'@analogjs/vite-plugin-angular'</span>;
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  manifest: {
+    name: <span class="str">'Buff'</span>,
+    version: <span class="str">'0.1.0'</span>,
+    permissions: [<span class="str">'storage'</span>, <span class="str">'activeTab'</span>, <span class="str">'scripting'</span>],
+    host_permissions: [<span class="str">'&lt;all_urls&gt;'</span>]
+  },
+  vite: () =&gt; ({
+    plugins: [<span class="fn">angular</span>()]
+  })
+});</code></pre>
+      <p>Entrypoints that serve Angular (popup, options) each need an HTML file that bootstraps an Angular module:</p>
+      <pre><code><span class="cm">&lt;!-- entrypoints/popup.html --&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html lang=<span class="str">"en"</span>&gt;
+  &lt;head&gt;
+    &lt;meta charset=<span class="str">"UTF-8"</span> /&gt;
+    &lt;meta name=<span class="str">"viewport"</span> content=<span class="str">"width=device-width, initial-scale=1.0"</span> /&gt;
+    &lt;title&gt;Buff&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;app-root&gt;&lt;/app-root&gt;
+    &lt;script type=<span class="str">"module"</span> src=<span class="str">"./popup/main.ts"</span>&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <pre><code><span class="cm">// entrypoints/popup/main.ts</span>
+<span class="kw">import</span> { bootstrapApplication } <span class="kw">from</span> <span class="str">'@angular/platform-browser'</span>;
+<span class="kw">import</span> { AppComponent } <span class="kw">from</span> <span class="str">'./app.component'</span>;
+
+<span class="fn">bootstrapApplication</span>(AppComponent).<span class="fn">catch</span>(console.error);</code></pre>
+      <p>Repeat the same pattern for <code>entrypoints/options.html</code> and <code>entrypoints/options/main.ts</code>.</p>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 4</span> Implement <code>lib/extractPageStructure.ts</code></h3>
+      <p>Extracts a structural skeleton of the page. Applies smart truncation — never chunks, never sends full HTML.</p>
+      <pre><code><span class="kw">export interface</span> PageSlice {
+  htmlSkeleton: string;
+  existingCSS: string;
+  viewport: { width: number; height: number };
+  url: string;
+  sliceIndex: number;       <span class="cm">// 0 = above-fold, 1+ = subsequent sections</span>
+  totalEstimatedSlices: number;
+}
+
+<span class="kw">export function</span> <span class="fn">extractPageStructure</span>(sliceIndex = 0): PageSlice {
+  <span class="kw">const</span> clone = document.documentElement.<span class="fn">cloneNode</span>(<span class="kw">true</span>) <span class="kw">as</span> HTMLElement;
+
+  <span class="cm">// Remove text content, leaving only structural tags and attributes</span>
+  <span class="kw">const</span> walker = document.<span class="fn">createTreeWalker</span>(clone, NodeFilter.SHOW_TEXT);
+  <span class="kw">const</span> textNodes: Node[] = [];
+  <span class="kw">while</span> (walker.<span class="fn">nextNode</span>()) textNodes.<span class="fn">push</span>(walker.currentNode);
+  textNodes.<span class="fn">forEach</span>(n =&gt; (n.textContent = <span class="str">''</span>));
+
+  <span class="cm">// Remove non-structural elements</span>
+  clone.<span class="fn">querySelectorAll</span>(<span class="str">'script, noscript, svg, img, video, iframe'</span>).<span class="fn">forEach</span>(el =&gt; el.<span class="fn">remove</span>());
+
+  <span class="kw">const</span> allSections = Array.<span class="fn">from</span>(clone.<span class="fn">querySelectorAll</span>(<span class="str">'body > *, main > *, article > *'</span>));
+  <span class="kw">const</span> sliceSize = Math.<span class="fn">ceil</span>(allSections.length / 3);
+  <span class="kw">const</span> start = sliceIndex * sliceSize;
+  <span class="kw">const</span> sliceElements = allSections.<span class="fn">slice</span>(start, start + sliceSize);
+
+  <span class="kw">const</span> htmlSkeleton = sliceElements.<span class="fn">map</span>(el =&gt; el.outerHTML).<span class="fn">join</span>(<span class="str">'\n'</span>).<span class="fn">substring</span>(0, 15000);
+
+  <span class="kw">const</span> allRules = Array.<span class="fn">from</span>(document.styleSheets)
+    .<span class="fn">filter</span>(s =&gt; !s.href || s.href.<span class="fn">startsWith</span>(location.origin))
+    .<span class="fn">flatMap</span>(s =&gt; {
+      <span class="kw">try</span> { <span class="kw">return</span> Array.<span class="fn">from</span>(s.cssRules).<span class="fn">map</span>(r =&gt; r.cssText); }
+      <span class="kw">catch</span> { <span class="kw">return</span> []; }
+    });
+
+  <span class="kw">const</span> layoutKeywords = [<span class="str">'width'</span>, <span class="str">'display'</span>, <span class="str">'float'</span>, <span class="str">'grid'</span>, <span class="str">'flex'</span>, <span class="str">'position'</span>, <span class="str">'margin'</span>, <span class="str">'padding'</span>];
+  <span class="kw">const</span> layoutRules = allRules.<span class="fn">filter</span>(r =&gt; layoutKeywords.<span class="fn">some</span>(k =&gt; r.<span class="fn">includes</span>(k)));
+  <span class="kw">const</span> otherRules  = allRules.<span class="fn">filter</span>(r =&gt; !layoutKeywords.<span class="fn">some</span>(k =&gt; r.<span class="fn">includes</span>(k)));
+  <span class="kw">const</span> existingCSS = [...layoutRules, ...otherRules].<span class="fn">join</span>(<span class="str">'\n'</span>).<span class="fn">substring</span>(0, 10000);
+
+  <span class="kw">const</span> totalEstimatedSlices = Math.<span class="fn">max</span>(1, Math.<span class="fn">ceil</span>(allSections.length / sliceSize));
+
+  <span class="kw">return</span> { htmlSkeleton, existingCSS, viewport: { width: window.innerWidth, height: window.innerHeight },
+    url: location.hostname, sliceIndex, totalEstimatedSlices };
+}</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 5</span> Implement <code>lib/buildPrompt.ts</code></h3>
+      <p>All selectors are scoped under <code>.buff-active</code> for high specificity without blanket <code>!important</code> abuse.</p>
+      <pre><code><span class="kw">import type</span> { PageSlice } <span class="kw">from</span> <span class="str">'./extractPageStructure'</span>;
+
+<span class="kw">export function</span> <span class="fn">buildPrompt</span>(pageData: PageSlice, userHint?: string): string {
+  <span class="kw">const</span> progressNote = pageData.totalEstimatedSlices &gt; 1
+    ? <span class="str">`This is section ${pageData.sliceIndex + 1} of ~${pageData.totalEstimatedSlices} sections on the page.`</span>
+    : <span class="str">''</span>;
+
+  <span class="kw">return</span> <span class="str">`You are an expert CSS developer. You will receive the HTML skeleton and CSS of a website.
+Your job is to return ONLY a CSS string that, when injected as a &lt;style&gt; block, will:
+
+1. Make the layout fully responsive and mobile-friendly
+2. Improve typography (readable font sizes, line heights, sensible font stacks)
+3. Modernise the visual design (clean spacing, updated colour palette if needed)
+4. Fix obvious accessibility issues (contrast, touch target sizes)
+5. NOT break any existing functionality or layout logic
+6. NOT use the * selector
+7. Prefix ALL selectors with .buff-active for high specificity
+8. NOT use position: fixed or position: absolute unless strictly necessary
+
+${progressNote}
+${userHint ? \`The user has also requested: "\${userHint}"\` : ''}
+
+Return ONLY valid CSS. No markdown fences, no explanation, no preamble.
+
+PAGE DATA:
+\${JSON.stringify(pageData)}\``;
+}</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 6</span> Implement <code>lib/sanitizeCSS.ts</code></h3>
+      <p>Value-aware sanitizer — blocks dangerous <em>values</em>, not entire properties. Preserves the layout-fixing CSS the AI needs to do its job.</p>
+      <pre><code><span class="kw">export function</span> <span class="fn">sanitizeCSS</span>(rawCSS: string): string {
+  <span class="kw">let</span> cleaned = rawCSS;
+
+  <span class="cm">// Strip * selector rules entirely</span>
+  cleaned = cleaned.<span class="fn">replace</span>(/\*\s*\{[^}]*\}/g, <span class="str">''</span>);
+
+  <span class="cm">// Strip @import rules</span>
+  cleaned = cleaned.<span class="fn">replace</span>(/@import[^;]+;/gi, <span class="str">''</span>);
+
+  <span class="cm">// Block dangerous position values (allow: relative, static, sticky)</span>
+  cleaned = cleaned.<span class="fn">replace</span>(/position\s*:\s*(fixed|absolute)\s*;/gi, <span class="str">''</span>);
+
+  <span class="cm">// Block pixel-exact widths/heights (allow: %, vw, vh, em, rem, auto, min-*, max-*)</span>
+  cleaned = cleaned.<span class="fn">replace</span>(/(?&lt;!\S)(width|height)\s*:\s*\d+px\s*;/gi, <span class="str">''</span>);
+
+  <span class="cm">// Block display: none</span>
+  cleaned = cleaned.<span class="fn">replace</span>(/display\s*:\s*none\s*;/gi, <span class="str">''</span>);
+
+  <span class="cm">// Block extreme z-index values</span>
+  cleaned = cleaned.<span class="fn">replace</span>(/z-index\s*:\s*(\d+)\s*;/gi, (match, val) =&gt;
+    <span class="fn">parseInt</span>(val, 10) &gt; 999 ? <span class="str">''</span> : match
+  );
+
+  <span class="kw">return</span> cleaned.<span class="fn">trim</span>();
+}</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 7</span> Implement <code>lib/apiClient.ts</code></h3>
+      <p>Supports model selection. Strips markdown fences from responses before returning.</p>
+      <pre><code><span class="kw">import</span> Anthropic <span class="kw">from</span> <span class="str">'@anthropic-ai/sdk'</span>;
+<span class="kw">import</span> OpenAI <span class="kw">from</span> <span class="str">'openai'</span>;
+
+<span class="kw">export type</span> Provider = <span class="str">'anthropic'</span> | <span class="str">'openai'</span>;
+<span class="kw">export type</span> AnthropicModel = <span class="str">'claude-haiku-4-5'</span> | <span class="str">'claude-sonnet-4-6'</span> | <span class="str">'claude-opus-4-6'</span>;
+<span class="kw">export type</span> OpenAIModel = <span class="str">'gpt-4o-mini'</span> | <span class="str">'gpt-4o'</span>;
+
+<span class="kw">function</span> <span class="fn">extractCSS</span>(raw: string): string {
+  <span class="kw">const</span> fenceMatch = raw.<span class="fn">match</span>(/```(?:css)?\s*([\s\S]*?)```/);
+  <span class="kw">return</span> fenceMatch ? fenceMatch[1].<span class="fn">trim</span>() : raw.<span class="fn">trim</span>();
+}
+
+<span class="kw">export async function</span> <span class="fn">generateCSS</span>(
+  prompt: string, apiKey: string,
+  provider: Provider = <span class="str">'anthropic'</span>,
+  model: string = <span class="str">'claude-sonnet-4-6'</span>
+): Promise&lt;string&gt; {
+  <span class="kw">if</span> (provider === <span class="str">'anthropic'</span>) {
+    <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">Anthropic</span>({ apiKey, dangerouslyAllowBrowser: <span class="kw">true</span> });
+    <span class="kw">const</span> message = <span class="kw">await</span> client.messages.<span class="fn">create</span>({
+      model, max_tokens: 4096,
+      messages: [{ role: <span class="str">'user'</span>, content: prompt }]
+    });
+    <span class="kw">return</span> <span class="fn">extractCSS</span>((message.content[0] <span class="kw">as</span> { text: string }).text);
+  }
+
+  <span class="kw">if</span> (provider === <span class="str">'openai'</span>) {
+    <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">OpenAI</span>({ apiKey, dangerouslyAllowBrowser: <span class="kw">true</span> });
+    <span class="kw">const</span> response = <span class="kw">await</span> client.chat.completions.<span class="fn">create</span>({
+      model, messages: [{ role: <span class="str">'user'</span>, content: prompt }], max_tokens: 4096
+    });
+    <span class="kw">return</span> <span class="fn">extractCSS</span>(response.choices[0].message.content ?? <span class="str">''</span>);
+  }
+
+  <span class="kw">throw new</span> Error(<span class="str">'Unknown provider'</span>);
+}
+
+<span class="kw">export async function</span> <span class="fn">validateAnthropicKey</span>(apiKey: string): Promise&lt;boolean&gt; {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">Anthropic</span>({ apiKey, dangerouslyAllowBrowser: <span class="kw">true</span> });
+    <span class="kw">await</span> client.models.<span class="fn">list</span>();
+    <span class="kw">return true</span>;
+  } <span class="kw">catch</span> { <span class="kw">return false</span>; }
+}
+
+<span class="kw">export async function</span> <span class="fn">validateOpenAIKey</span>(apiKey: string): Promise&lt;boolean&gt; {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">OpenAI</span>({ apiKey, dangerouslyAllowBrowser: <span class="kw">true</span> });
+    <span class="kw">await</span> client.models.<span class="fn">list</span>();
+    <span class="kw">return true</span>;
+  } <span class="kw">catch</span> { <span class="kw">return false</span>; }
+}</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 8</span> Implement Content Script (<code>entrypoints/content.ts</code>)</h3>
+      <p>Injects and removes CSS. Manages <code>.buff-active</code> class on <code>&lt;html&gt;</code>. Auto-applies cached CSS on page load. Writes active state to storage.</p>
+      <pre><code><span class="kw">import</span> { extractPageStructure } <span class="kw">from</span> <span class="str">'../lib/extractPageStructure'</span>;
+<span class="kw">import</span> { sanitizeCSS } <span class="kw">from</span> <span class="str">'../lib/sanitizeCSS'</span>;
+
+<span class="kw">const</span> STYLE_TAG_ID = <span class="str">'buff-injected-styles'</span>;
+
+<span class="kw">export function</span> <span class="fn">injectCSS</span>(css: string): <span class="kw">void</span> {
+  <span class="fn">removeInjectedCSS</span>();
+  <span class="kw">const</span> style = document.<span class="fn">createElement</span>(<span class="str">'style'</span>);
+  style.id = STYLE_TAG_ID;
+  style.textContent = css;
+  document.head.<span class="fn">appendChild</span>(style);
+  document.documentElement.classList.<span class="fn">add</span>(<span class="str">'buff-active'</span>);
+  chrome.storage.local.<span class="fn">set</span>({ [<span class="str">`active:\${location.hostname}`</span>]: <span class="kw">true</span> });
+}
+
+<span class="kw">export function</span> <span class="fn">removeInjectedCSS</span>(): <span class="kw">void</span> {
+  document.<span class="fn">getElementById</span>(STYLE_TAG_ID)?.<span class="fn">remove</span>();
+  document.documentElement.classList.<span class="fn">remove</span>(<span class="str">'buff-active'</span>);
+  chrome.storage.local.<span class="fn">set</span>({ [<span class="str">`active:\${location.hostname}`</span>]: <span class="kw">false</span> });
+}
+
+<span class="cm">// Auto-apply cached CSS on page load</span>
+chrome.storage.local.<span class="fn">get</span>(
+  [<span class="str">`css:\${location.hostname}`</span>, <span class="str">`autoApply:\${location.hostname}`</span>],
+  (result) =&gt; {
+    <span class="kw">const</span> cached    = result[<span class="str">`css:\${location.hostname}`</span>];
+    <span class="kw">const</span> autoApply = result[<span class="str">`autoApply:\${location.hostname}`</span>] !== <span class="kw">false</span>;
+    <span class="kw">if</span> (cached &amp;&amp; autoApply) <span class="fn">injectCSS</span>(cached);
+  }
+);
+
+chrome.runtime.<span class="fn">onMessage</span>.addListener((message, _sender, sendResponse) =&gt; {
+  <span class="kw">if</span> (message.type === <span class="str">'GET_PAGE_STRUCTURE'</span>)
+    <span class="fn">sendResponse</span>({ structure: <span class="fn">extractPageStructure</span>(message.sliceIndex ?? 0) });
+  <span class="kw">if</span> (message.type === <span class="str">'INJECT_CSS'</span>) {
+    <span class="kw">const</span> safe = <span class="fn">sanitizeCSS</span>(message.css);
+    <span class="fn">injectCSS</span>(safe);
+    <span class="fn">sendResponse</span>({ success: <span class="kw">true</span> });
+  }
+  <span class="kw">if</span> (message.type === <span class="str">'RESET_CSS'</span>) {
+    <span class="fn">removeInjectedCSS</span>();
+    <span class="fn">sendResponse</span>({ success: <span class="kw">true</span> });
+  }
+  <span class="kw">return true</span>;
+});</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 9</span> Implement Background Worker (<code>entrypoints/background.ts</code>)</h3>
+      <p>Orchestrates the API call flow. Supports CSS merging for progressive improvement.</p>
+      <pre><code><span class="kw">import</span> { generateCSS } <span class="kw">from</span> <span class="str">'../lib/apiClient'</span>;
+<span class="kw">import</span> { buildPrompt } <span class="kw">from</span> <span class="str">'../lib/buildPrompt'</span>;
+<span class="kw">import</span> { getStoredCSS, storeCSS, getSettings } <span class="kw">from</span> <span class="str">'../lib/storage'</span>;
+
+chrome.runtime.onMessage.<span class="fn">addListener</span>((message, _sender, sendResponse) =&gt; {
+  <span class="kw">if</span> (message.type === <span class="str">'IMPROVE_PAGE'</span>) {
+    (<span class="kw">async</span> () =&gt; {
+      <span class="kw">try</span> {
+        <span class="kw">const</span> { apiKey, provider, model } = <span class="kw">await</span> <span class="fn">getSettings</span>();
+        <span class="kw">if</span> (!apiKey) {
+          <span class="fn">sendResponse</span>({ error: <span class="str">'No API key configured. Open extension settings.'</span> });
+          <span class="kw">return</span>;
+        }
+        <span class="kw">const</span> cached = <span class="kw">await</span> <span class="fn">getStoredCSS</span>(message.domain);
+        <span class="kw">if</span> (cached &amp;&amp; !message.forceRegenerate &amp;&amp; message.sliceIndex === 0) {
+          <span class="fn">sendResponse</span>({ css: cached, fromCache: <span class="kw">true</span> });
+          <span class="kw">return</span>;
+        }
+        <span class="kw">const</span> prompt   = <span class="fn">buildPrompt</span>(message.pageStructure, message.userHint);
+        <span class="kw">const</span> newCSS   = <span class="kw">await</span> <span class="fn">generateCSS</span>(prompt, apiKey, provider, model);
+        <span class="kw">const</span> existing = message.sliceIndex &gt; 0 ? (cached ?? <span class="str">''</span>) : <span class="str">''</span>;
+        <span class="kw">const</span> merged   = existing
+          ? <span class="str">`\${existing}\n\n/* Slice \${message.sliceIndex} */\n\${newCSS}`</span>
+          : newCSS;
+        <span class="kw">await</span> <span class="fn">storeCSS</span>(message.domain, merged);
+        <span class="fn">sendResponse</span>({ css: merged, fromCache: <span class="kw">false</span> });
+      } <span class="kw">catch</span> (err) {
+        <span class="fn">sendResponse</span>({ error: <span class="fn">String</span>(err) });
+      }
+    })();
+    <span class="kw">return true</span>;
+  }
+});</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 10</span> Implement Storage Helpers (<code>lib/storage.ts</code>)</h3>
+      <pre><code><span class="kw">export interface</span> Settings {
+  apiKey: string;
+  provider: <span class="str">'anthropic'</span> | <span class="str">'openai'</span>;
+  model: string;
+}
+
+<span class="kw">export async function</span> <span class="fn">getSettings</span>(): Promise&lt;Settings&gt; {
+  <span class="kw">return new</span> Promise(resolve =&gt; {
+    chrome.storage.local.<span class="fn">get</span>([<span class="str">'apiKey'</span>, <span class="str">'provider'</span>, <span class="str">'model'</span>], result =&gt; {
+      <span class="fn">resolve</span>({ apiKey: result.apiKey ?? <span class="str">''</span>, provider: result.provider ?? <span class="str">'anthropic'</span>,
+        model: result.model ?? <span class="str">'claude-sonnet-4-6'</span> });
+    });
+  });
+}
+
+<span class="kw">export async function</span> <span class="fn">saveSettings</span>(settings: Partial&lt;Settings&gt;): Promise&lt;<span class="kw">void</span>&gt; {
+  <span class="kw">return new</span> Promise(resolve =&gt; chrome.storage.local.<span class="fn">set</span>(settings, resolve));
+}
+
+<span class="kw">export async function</span> <span class="fn">getStoredCSS</span>(domain: string): Promise&lt;string | <span class="kw">null</span>&gt; {
+  <span class="kw">return new</span> Promise(resolve =&gt; {
+    chrome.storage.local.<span class="fn">get</span>([<span class="str">`css:\${domain}`</span>], result =&gt;
+      <span class="fn">resolve</span>(result[<span class="str">`css:\${domain}`</span>] ?? <span class="kw">null</span>));
+  });
+}
+
+<span class="kw">export async function</span> <span class="fn">storeCSS</span>(domain: string, css: string): Promise&lt;<span class="kw">void</span>&gt; {
+  <span class="kw">return new</span> Promise(resolve =&gt;
+    chrome.storage.local.<span class="fn">set</span>({ [<span class="str">`css:\${domain}`</span>]: css }, resolve));
+}
+
+<span class="kw">export async function</span> <span class="fn">clearStoredCSS</span>(domain: string): Promise&lt;<span class="kw">void</span>&gt; {
+  <span class="kw">return new</span> Promise(resolve =&gt;
+    chrome.storage.local.<span class="fn">remove</span>([<span class="str">`css:\${domain}`</span>, <span class="str">`active:\${domain}`</span>, <span class="str">`autoApply:\${domain}`</span>], resolve));
+}
+
+<span class="kw">export async function</span> <span class="fn">getAllSavedDomains</span>(): Promise&lt;string[]&gt; {
+  <span class="kw">return new</span> Promise(resolve =&gt; {
+    chrome.storage.local.<span class="fn">get</span>(<span class="kw">null</span>, result =&gt;
+      <span class="fn">resolve</span>(Object.<span class="fn">keys</span>(result).<span class="fn">filter</span>(k =&gt; k.<span class="fn">startsWith</span>(<span class="str">'css:'</span>)).<span class="fn">map</span>(k =&gt; k.<span class="fn">replace</span>(<span class="str">'css:'</span>, <span class="str">''</span>))));
+  });
+}
+
+<span class="kw">export async function</span> <span class="fn">setAutoApply</span>(domain: string, enabled: boolean): Promise&lt;<span class="kw">void</span>&gt; {
+  <span class="kw">return new</span> Promise(resolve =&gt;
+    chrome.storage.local.<span class="fn">set</span>({ [<span class="str">`autoApply:\${domain}`</span>]: enabled }, resolve));
+}</code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 11</span> Build &amp; Load in Chrome</h3>
+      <pre><code><span class="cm"># Development mode with hot reload</span>
+npm run dev
+
+<span class="cm"># In Chrome:</span>
+<span class="cm"># 1. Go to chrome://extensions</span>
+<span class="cm"># 2. Enable "Developer Mode" (top right)</span>
+<span class="cm"># 3. Click "Load unpacked"</span>
+<span class="cm"># 4. Select the .output/chrome-mv3 folder</span></code></pre>
+    </div>
+
+    <div class="step-card">
+      <h3><span class="step-num">Step 12</span> Production Build</h3>
+      <pre><code>npm run build
+<span class="cm"># Output: .output/chrome-mv3</span>
+
+npm run zip
+<span class="cm"># Produces a .zip ready for Chrome Web Store upload</span></code></pre>
+    </div>
+
+  </div><!-- /steps -->
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="popup-spec">6. Popup UI Specification</h2>
+
+  <pre class="wireframe">┌─────────────────────────────┐
+│  ⚡ Buff              ⚙️   │
+├─────────────────────────────┤
+│  Current site:              │
+│  irs.gov                    │
+│                             │
+│  Status: ✅ Improved        │
+│                             │
+│  [ Improve This Page ]      │
+│  [ Improve More ]           │  ← appears after first run on large pages
+│  [ Regenerate ]             │
+│  [ Reset to Original ]      │
+│                             │
+│  ☑ Auto-apply on visit      │  ← toggle; default on
+│                             │
+│  Optional hint:             │
+│  ┌─────────────────────┐    │
+│  │ make it darker...   │    │
+│  └─────────────────────┘    │
+│                             │
+│  ⚠ Page is large — results  │  ← shown when extraction hits caps
+│    may be partial            │
+└─────────────────────────────┘</pre>
+
+  <h3>Popup States</h3>
+  <div class="state-list">
+    <div class="state-row"><span class="state-label">No API key</span> Prompt to open settings; no other controls shown.</div>
+    <div class="state-row"><span class="state-label">Not yet improved</span> Show Improve This Page only.</div>
+    <div class="state-row"><span class="state-label">Loading</span> Spinner with "Analysing page…" message; all buttons disabled.</div>
+    <div class="state-row"><span class="state-label">Improved (cached)</span> Show Improve More (if large page), Regenerate, Reset, auto-apply toggle.</div>
+    <div class="state-row"><span class="state-label">Improved (fresh)</span> Same as cached.</div>
+    <div class="state-row"><span class="state-label">Error</span> Error message with Retry button.</div>
+  </div>
+
+  <p>
+    <strong>State source of truth:</strong> The popup reads <code>css:{domain}</code> and <code>active:{domain}</code>
+    from <code>chrome.storage.local</code> on open — no message round-trips needed just to determine current state.
+  </p>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="options-spec">7. Options Page Specification</h2>
+
+  <pre class="wireframe">┌──────────────────────────────────────┐
+│  Buff Settings                       │
+├──────────────────────────────────────┤
+│  AI Provider                         │
+│  ○ Anthropic (Claude)  ● OpenAI      │
+│                                      │
+│  Model                               │
+│  ○ Haiku (fast, cheap)               │
+│  ● Sonnet (recommended)              │
+│  ○ Opus (highest quality)            │
+│                                      │
+│  API Key                             │
+│  ┌────────────────────────────────┐  │
+│  │ sk-ant-...                     │  │
+│  └────────────────────────────────┘  │
+│  [ Validate Key ]   ✅ Key valid     │
+│  (validates via models.list() — no   │
+│   token spend)                       │
+│                                      │
+│  Saved Sites  (3 sites improved)     │
+│  • irs.gov              [Clear]      │
+│  • legislature.ca.gov   [Clear]      │
+│  • old-forum.net        [Clear]      │
+│                          [Clear All] │
+│                                      │
+│  [ Save Settings ]                   │
+└──────────────────────────────────────┘</pre>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="execution-steps">8. Execution Steps</h2>
+  <p>Each step ends at a testable checkpoint. The project can be paused and resumed at any step boundary.</p>
+
+  <div class="table-wrap">
+    <table class="exec-table">
+      <thead>
+        <tr><th>Step</th><th>Scope</th><th>Checkpoint</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Step 1 — Scaffold + Settings</td>
+          <td>WXT + Angular setup, popup shell, options page, storage helpers, API key validation</td>
+          <td>Settings page saves/loads correctly; extension installs without errors</td>
+        </tr>
+        <tr>
+          <td>Step 2 — Core Library</td>
+          <td><code>extractPageStructure</code>, <code>buildPrompt</code>, <code>apiClient</code>, <code>sanitizeCSS</code> — all pure functions, fully unit tested</td>
+          <td><code>npm test</code> passes; all lib functions testable without a browser</td>
+        </tr>
+        <tr>
+          <td>Step 3 — Content + Background</td>
+          <td><code>content.ts</code> (inject/remove/auto-apply), <code>background.ts</code> (API call, cache, merge), message protocol typed</td>
+          <td>Full improvement flow triggerable from DevTools console via <code>chrome.runtime.sendMessage</code></td>
+        </tr>
+        <tr>
+          <td>Step 4 — Popup Wiring</td>
+          <td>All 5 popup states wired, all buttons connected, auto-apply toggle, storage as state source of truth</td>
+          <td>Complete user flow works end-to-end through the popup</td>
+        </tr>
+        <tr>
+          <td>Step 5 — Progressive Improvement</td>
+          <td>Smart truncation, slice-based extraction, CSS merging, "Improve More" button, large-page warning</td>
+          <td>Works correctly on a large government site (e.g. irs.gov) without broken layouts</td>
+        </tr>
+        <tr>
+          <td>Step 6 — Hardening</td>
+          <td>Saved sites list in options, error states, retry logic, keyboard shortcut (<kbd>Alt+Shift+P</kbd>), test on 10 real sites</td>
+          <td>No silent failures; every error surfaces a human-readable message</td>
+        </tr>
+        <tr>
+          <td>Step 7 — Publish</td>
+          <td>Icon, onboarding for first-time users, privacy policy page, store listing copy, zip and submit</td>
+          <td>Extension live on Chrome Web Store</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr />
+
+  <!-- ────────────────────────────────────────────────────────── -->
+  <h2 id="risks">9. Known Technical Risks &amp; Mitigations</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Risk</th><th>Mitigation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Page HTML too large for AI context window</td>
+          <td>Smart truncation (layout CSS prioritised, above-fold first). Progressive improvement for large pages. Token warning shown in popup.</td>
+        </tr>
+        <tr>
+          <td>Injected CSS breaks page layout</td>
+          <td>Value-aware sanitizer (blocks dangerous <em>values</em>, not whole properties). Instant Reset via <code>.buff-active</code> class removal.</td>
+        </tr>
+        <tr>
+          <td>JS-driven styles fighting injected CSS</td>
+          <td>All AI-generated selectors scoped under <code>.buff-active</code> on <code>&lt;html&gt;</code> for high specificity.</td>
+        </tr>
+        <tr>
+          <td>AI returns markdown-fenced CSS</td>
+          <td><code>extractCSS()</code> in <code>apiClient.ts</code> strips fences before returning; silent, zero-cost fix.</td>
+        </tr>
+        <tr>
+          <td>Shadow DOM content not styled</td>
+          <td>Documented limitation; noted in UI that some embedded widgets may not be affected.</td>
+        </tr>
+        <tr>
+          <td>CSP headers blocking style injection</td>
+          <td>Use <code>chrome.scripting.insertCSS()</code> which bypasses page CSP.</td>
+        </tr>
+        <tr>
+          <td>API key exposed in storage</td>
+          <td>Stored in <code>chrome.storage.local</code> (not synced). Reminder shown in options UI that key stays on-device.</td>
+        </tr>
+        <tr>
+          <td>Chrome Web Store review for <code>&lt;all_urls&gt;</code></td>
+          <td>Justification: extension only activates on explicit user click; reads no personal data.</td>
+        </tr>
+        <tr>
+          <td>High per-call API cost</td>
+          <td>Default model is Sonnet (~$0.08/call). Haiku available for cost-conscious users (~$0.02/call).</td>
+        </tr>
+        <tr>
+          <td>WXT Angular compatibility (no official module)</td>
+          <td>Angular integrates via <code>@analogjs/vite-plugin-angular</code> Vite plugin. Vanilla-ts WXT template used as base.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
